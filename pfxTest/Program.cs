@@ -37,7 +37,7 @@ namespace pfxTest
             string cypher2 = DataCertificate.RSAEncrypt(keyPublic2, "程序员2");  // 加密  
             string plain2 = DataCertificate.RSADecrypt(keyPrivate, cypher2);  // 解密, cer里面并没有私钥，所以这里使用前面得到的私钥来解密  
 
-            Debug.Assert(plain2 == "程序员2");
+            Debug.Assert(plain2 == "程序员2");  
 
             // 生成一个pfx， 并且从store里面删除  
             DataCertificate.ExportToPfxFile("foo", "d:\\mycert\\foo.pfx", "111", true);
