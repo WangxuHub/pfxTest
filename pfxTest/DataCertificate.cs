@@ -110,6 +110,10 @@ namespace pfxTest
                     Debug.Print(string.Format("certificate name: {0}", x509.Subject));
                     //byte[] pfxByte = x509.Export(X509ContentType.Pfx, password);     
                     byte[] cerByte = x509.Export(X509ContentType.Cert);
+
+                    string direct = System.IO.Path.GetDirectoryName(cerFileName);
+                    if (!System.IO.Directory.Exists(direct))
+                        System.IO.Directory.CreateDirectory(direct);
                     using (FileStream fileStream = new FileStream(cerFileName, FileMode.Create))
                     {
                         // Write the data to the file, byte by byte.     
