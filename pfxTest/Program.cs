@@ -12,11 +12,17 @@ namespace pfxTest
     {
         static void Main(string[] args)
         {
-            // 在personal（个人）里面创建一个foo的证书  
-            DataCertificate.CreateCertWithPrivateKey("foo", "C:\\Program Files (x86)\\Windows Kits\\8.1\\bin\\x64\\makecert.exe");
 
             // 获取证书  
             X509Certificate2 c1 = DataCertificate.GetCertificateFromStore("foo");
+            if (c1 == null)
+            {
+                // 在personal（个人）里面创建一个foo的证书  
+                DataCertificate.CreateCertWithPrivateKey("foo", "C:\\Program Files (x86)\\Windows Kits\\8.1\\bin\\x64\\makecert.exe");
+                c1 = DataCertificate.GetCertificateFromStore("foo");
+            }
+
+            
 
             string keyPublic = c1.PublicKey.Key.ToXmlString(false);  // 公钥  
             string keyPrivate = c1.PrivateKey.ToXmlString(true);  // 私钥  
@@ -27,9 +33,9 @@ namespace pfxTest
             Debug.Assert(plain == "程序员");
 
             // 生成一个cert文件  
-            DataCertificate.ExportToCerFile("foo", "d:\\mycert\\foo.cer");
+            DataCertificate.ExportToCerFile("foo", "foo.cer");
 
-            X509Certificate2 c2 = DataCertificate.GetCertFromCerFile("d:\\mycert\\foo.cer");
+            X509Certificate2 c2 = DataCertificate.GetCertFromCerFile("foo.cer");
 
             string keyPublic2 = c2.PublicKey.Key.ToXmlString(false);
 
@@ -40,9 +46,9 @@ namespace pfxTest
             Debug.Assert(plain2 == "程序员2");  
 
             // 生成一个pfx， 并且从store里面删除  
-            DataCertificate.ExportToPfxFile("foo", "d:\\mycert\\foo.pfx", "111", true);
+            DataCertificate.ExportToPfxFile("foo", "foo.pfx", "111", true);
 
-            X509Certificate2 c3 = DataCertificate.GetCertificateFromPfxFile("d:\\mycert\\foo.pfx", "111");
+            X509Certificate2 c3 = DataCertificate.GetCertificateFromPfxFile("foo.pfx", "111");
 
             string keyPublic3 = c3.PublicKey.Key.ToXmlString(false);  // 公钥  
             string keyPrivate3 = c3.PrivateKey.ToXmlString(true);  // 私钥  

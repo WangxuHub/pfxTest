@@ -112,13 +112,12 @@ namespace pfxTest
                     byte[] cerByte = x509.Export(X509ContentType.Cert);
 
                     string direct = System.IO.Path.GetDirectoryName(cerFileName);
-                    if (!System.IO.Directory.Exists(direct))
+                    if (!string.IsNullOrEmpty(direct) && !System.IO.Directory.Exists(direct))
                         System.IO.Directory.CreateDirectory(direct);
                     using (FileStream fileStream = new FileStream(cerFileName, FileMode.Create))
                     {
                         // Write the data to the file, byte by byte.     
-                        for (int i = 0; i < cerByte.Length; i++)
-                            fileStream.WriteByte(cerByte[i]);
+                        fileStream.Write(cerByte,0,cerByte.Length);
                         // Set the stream position to the beginning of the file.     
                         fileStream.Seek(0, SeekOrigin.Begin);
                         // Read and verify the data.     
@@ -154,7 +153,8 @@ namespace pfxTest
         {
             try
             {
-                return new X509Certificate2(pfxFileName, password, X509KeyStorageFlags.Exportable);
+                var cert= new X509Certificate2(pfxFileName, password, X509KeyStorageFlags.Exportable|X509KeyStorageFlags.PersistKeySet);
+                return cert;
             }
             catch (Exception e)
             {
